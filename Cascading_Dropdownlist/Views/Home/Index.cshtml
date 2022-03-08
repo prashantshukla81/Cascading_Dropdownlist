@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<div class="container-fluid">
+    <
+    <div class="row">
+        <div class="col-3 bg-info">
+            <form>
+                <label>Country:</label>
+                <select id="country" class="form-control" asp-items="@(new SelectList(ViewBag.countryList,"Value","Text"))"></select>
+            </form>
+        </div>
+        <div class="col-3 bg-primary">
+            <label>State</label>
+            <select id="state" class="form-control" asp-items="@(new SelectList(string.Empty,"Value","Text"))"></select>
+        </div>
+        <div class="col-3 bg-warning">
+            <label>City</label>
+            <select id="city" class="form-control" asp-items="@(new SelectList(string.Empty,"Value","Text"))"></select>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#country").change(function () {
+            $.getJSON("/home/GetStatelist", { cid: $("#country").val() }, function (d) {
+                var row = "";
+                $("#state").empty();
+                $.each(d, function (i, v) {
+                    row += "<option value=" + v.value + ">" + v.text + "</option>";
+                });
+                $("#state").html(row);
+            })
+        })
+        $("#state").change(function () {
+            $.getJSON("/home/GetCitylist", { sid: $("#state").val() }, function (d) {
+                var row = "";
+                $.each(d, function (i, v) {
+                    row += "<option value=" + v.value + ">" + v.text + "</option>";
+                });
+                $("#city").html(row);
+            })
+        })
+    })
+</script>
